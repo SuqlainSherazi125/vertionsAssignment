@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Assessment Task Virtions</title>
+
+    <link rel="stylesheet" th:href="@{webjars/bootstrap/4.2.1/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+
+</head>
+
+<body>
+
+<main role="main" class="container">
+
+    <div class="starter-template">
+        <h1 style="text-align: center">Countries Information</h1>
+    </div>
+    <form id="populationForm">
+        <h2>Please Enter a Country Name: </h2>
+        <input type="text" id="countryName" name="country">
+        <button type="submit">Click</button>
+    </form>
+    <br><br>
+    <label>===========POPULATION[1st rapidAPI]===========</label>
+    <br>
+    <h2>Country Name:</h2><label id="cname"></label>
+    <br>
+    <h2>Total Population:</h2><label id="count"></label>
+    <br><br>
+    <label>===========WEATHER[2nd rapidAPI]===========</label>
+    <br>
+    <h2>Country Name:</h2><label id="country"></label>
+    <br>
+    <h2>Weather Statistics:</h2><label id="weather"></label>
+
+
+
+
+</main>
+<!-- /.container -->
+
+<script>
+
+    $(document).ready(function() {
+        $('#populationForm').submit(function(event) {
+            // Prevent default form submission
+            event.preventDefault();
+
+            // Get form data
+            var country = $('#countryName').val();
+
+            // Send AJAX request
+            $.ajax({
+                type: 'POST',
+                url: '/populationData',
+                data: { country: country },
+                success: function(response) {
+                    console.log('Population data:', response);
+                    var jsonResp = JSON.parse(response);
+                    $('#cname').text(jsonResp.country);
+                    $('#count').text(jsonResp.readable_format);
+
+                }, error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+            $.ajax({
+                type: 'POST',
+                url: '/weatherData',
+                data: { country: country },
+                success: function(response) {
+                    console.log('Weather data:', response);
+                    $('#country').text($('#cname').text());
+                    $('#weather').text(response);
+
+
+                }, error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+
+        });
+    });
+</script>
+
+<script type="text/javascript" th:src="@{webjars/bootstrap/4.2.1/js/bootstrap.min.js}"></script>
+</body>
+</html>
